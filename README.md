@@ -1,45 +1,19 @@
-# 🪑 Madera Viva — Tienda de muebles online
+Madera Viva
 
-Tienda online de muebles con compra completa y entrega a domicilio, hecha con **HTML, CSS y JavaScript puro** (sin librerías ni servidor). Proyecto de portafolio.
+Tienda online de muebles. A diferencia de mi primera tienda, aquí la compra se completa dentro de la misma página, sin pasar por WhatsApp: el cliente elige los muebles, llena sus datos de entrega, escoge cómo pagar y recibe un número de pedido.
 
-## Qué hace
+¿Qué incluye?
 
-- Catálogo de 12 muebles con búsqueda, filtro por categoría y orden por precio
-- Detalle de producto con selección de color y cantidad
-- Carrito con cantidades, código de descuento (`BIENVENIDO10`) y totales en bolivianos (Bs)
-- **Checkout en 3 pasos:** datos de entrega → método de pago → confirmación
-- **Entrega a domicilio** en 5 ciudades, con costo por ciudad y envío gratis desde Bs 3.000
-- Elección de fecha y horario de entrega
-- Tres métodos de pago: QR bancario, tarjeta (validada con el algoritmo de Luhn) y contra entrega
-- Número de pedido e historial en "Mis pedidos"
-- Validación de formularios (celular boliviano, correo, dirección, fecha)
-- Diseño responsive para celular y computadora
+Un catálogo de 12 muebles con búsqueda y filtros, un carrito con código de descuento (BIENVENIDO10) y una compra en tres pasos: entrega, pago y confirmación.
 
-## Importante
+La entrega a domicilio tiene un costo según la ciudad (La Paz, El Alto, Santa Cruz, Cochabamba y Sucre) y es gratis en compras desde Bs 3.000. Se puede pagar con QR, con tarjeta o contra entrega. Los pedidos quedan guardados en la sección "Mis pedidos".
 
-El pago es una **simulación** para demostrar el flujo de compra. No se cobra dinero real y **no se guardan datos de tarjeta**. El carrito y los pedidos se guardan solo en el navegador (`localStorage`).
+Sobre el pago
 
-## Cómo ejecutarlo
+El pago es una simulación. Como la página está en GitHub Pages y no tiene servidor, no se cobra dinero real ni se guardan datos de tarjeta. Para una tienda de verdad habría que conectar una pasarela de pago y una base de datos.
 
-1. Descarga o clona el repositorio
-2. Abre `index.html` en tu navegador
+Para completar una compra de prueba puedes usar el celular 70000000 y la tarjeta 4111 1111 1111 1111 con cualquier fecha futura.
 
-## Personalización
+Está hecho con HTML, CSS y JavaScript, sin librerías.
 
-- Productos: edita el arreglo `P` en `index.html`
-- Ciudades y costos de envío: edita el objeto `CITIES`
-- Monto de envío gratis: constante `FREE`
-
-## Próximos pasos
-
-- Backend con Node.js y base de datos para guardar pedidos
-- Pasarela de pago real
-- Panel de administración de productos
-
-## Tecnologías
-
-HTML5 · CSS3 · JavaScript (ES6) · localStorage
-
-## Autor
-
-Hennry — estudiante de ingeniería de sistemas, UDABOL.
+Hennry, estudiante de Ingeniería de Sistemas en UDABOL.
