@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Madera Viva — Muebles con entrega a domicilio</title>
+<style>
+:root{--bg:#f2f4f6;--ink:#1c2630;--navy:#1c2b3a;--wood:#a8743a;--sage:#8fa58f;--card:#fff;--line:#d9dee3;--ok:#2e7d4f;--err:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+h1,h2,h3{font-family:Georgia,serif;margin:0}
+button,input,select{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--wood);outline-offset:2px}
+.bar{background:var(--wood);color:#fff;text-align:center;padding:6px 12px;font-size:.9rem}
+header.top{background:var(--navy);color:#fff;padding:12px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header.top h1{font-size:1.4rem;margin-right:auto}
+.search{padding:8px 12px;border-radius:6px;border:0;min-width:180px}
+.btn{background:var(--wood);color:#fff;border:0;border-radius:6px;padding:9px 16px;font-weight:600}
+.btn.alt{background:transparent;border:1.5px solid currentColor}
+.btn.dark{background:var(--navy)}
+.btn:disabled{opacity:.5}
+.hero{max-width:1000px;margin:auto;padding:44px 20px 20px}
+.hero h2{font-size:clamp(2rem,6vw,3.5rem);line-height:1.05;max-width:16ch}
+.hero p{max-width:55ch}
+.tools{max-width:1000px;margin:auto;padding:8px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{background:transparent;border:1.5px solid var(--navy);color:var(--navy);border-radius:999px;padding:6px 14px}
+.chip.on{background:var(--navy);color:#fff}
+select.sort{margin-left:auto;padding:7px;border-radius:6px;border:1px solid var(--line)}
+.grid{max-width:1000px;margin:auto;padding:12px 20px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer}
+.thumb{height:140px;display:grid;place-items:center;font-size:3.6rem}
+.card .b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card h3{font-size:1.05rem}
+.card small{color:#5b6672}
+.price{font-weight:700;font-size:1.1rem;margin-top:auto}
+.overlay{position:fixed;inset:0;background:rgba(15,22,30,.6);display:none;align-items:flex-start;justify-content:center;overflow:auto;z-index:20;padding:20px}
+.overlay.open{display:flex}
+.box{background:#fff;border-radius:12px;max-width:760px;width:100%;padding:22px;position:relative}
+.x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:1.6rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+label{display:block;font-size:.88rem;margin:10px 0 3px;font-weight:600}
+input,select.f{width:100%;padding:9px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.steps{display:flex;gap:6px;margin:12px 0;font-size:.85rem}
+.steps span{flex:1;padding:6px;text-align:center;border-bottom:3px solid var(--line);color:#6b7682}
+.steps span.on{border-color:var(--wood);color:var(--ink);font-weight:700}
+.err{color:var(--err);font-size:.9rem;min-height:1.2em;margin-top:8px}
+.sum{background:var(--bg);border-radius:8px;padding:14px;font-size:.95rem}
+.sum div{display:flex;justify-content:space-between;gap:8px;padding:2px 0}
+.sum .t{font-weight:700;font-size:1.1rem;border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:8px;padding:10px;margin:8px 0;font-weight:400}
+.opt input{width:auto}
+.opt.on{border-color:var(--wood);background:#faf5ee}
+.qr{display:block;margin:10px auto;width:150px;height:150px}
+.note{font-size:.82rem;color:#5b6672}
+aside#cart{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);background:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .25s;z-index:15;display:flex;flex-direction:column}
+aside#cart.open{transform:none}
+.ci{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.qty button{width:26px;height:26px;border:1px solid var(--navy);background:#fff;border-radius:6px}
+.ok{color:var(--ok)}
+@media(prefers-reduced-motion:reduce){aside#cart{transition:none}}
+</style>
+</head>
+<body>
+<div class="bar">Entrega a domicilio en La Paz, El Alto, Santa Cruz, Cochabamba y Sucre · Envío gratis desde Bs 3.000</div>
+<header class="top">
+  <h1>Madera Viva</h1>
+  <input class="search" id="q" placeholder="Buscar muebles" aria-label="Buscar muebles">
+  <button class="btn alt" onclick="showOrders()">Mis pedidos</button>
+  <button class="btn" onclick="toggleCart(true)">Carrito (<span id="cnt">0</span>)</button>
+</header>
+
+<section class="hero">
+  <h2>Muebles hechos en Bolivia, a la puerta de tu casa.</h2>
+  <p>Elige, paga en línea y programa el día de entrega. Usa el código <strong>BIENVENIDO10</strong> para 10% de descuento.</p>
+</section>
+<div class="tools" id="tools"></div>
+<main class="grid" id="grid"></main>
+
+<aside id="cart" aria-label="Carrito">
+  <header class="top" style="position:static"><h1>Tu carrito</h1><button class="btn alt" onclick="toggleCart(false)">Cerrar</button></header>
+  <div id="citems" style="flex:1;overflow:auto;padding:8px 18px"></div>
+  <div style="padding:14px 18px;border-top:1px solid var(--line)">
+    <div class="row2"><input id="cup" placeholder="Código de descuento" aria-label="Código de descuento"><button class="btn dark" onclick="applyCoupon()">Aplicar</button></div>
+    <div id="cmsg" class="err"></div>
+    <div class="sum" id="csum"></div>
+    <button class="btn" style="width:100%;margin-top:10px" id="go" onclick="checkout(1)">Finalizar compra</button>
+  </div>
+</aside>
+
+<div class="overlay" id="ov"><div class="box" id="box"></div></div>
+
+<script>
+const CITIES = {"La Paz":50,"El Alto":60,"Santa Cruz":70,"Cochabamba":65,"Sucre":80};
+const FREE = 3000;
+const P = [
+ {id:1,name:"Sofá 3 plazas",cat:"Sala",price:2890,e:"🛋️",c:"#cfd9d1",d:"Tapizado en tela resistente, estructura de madera de roble.",dim:"210 × 90 × 85 cm",col:["Gris","Azul","Verde"]},
+ {id:2,name:"Sillón individual",cat:"Sala",price:1190,e:"🛋️",c:"#d6dde6",d:"Asiento amplio con respaldo reclinable.",dim:"85 × 80 × 90 cm",col:["Gris","Azul"]},
+ {id:3,name:"Mesa de centro",cat:"Sala",price:650,e:"🪵",c:"#e2d3bf",d:"Tablero de madera maciza con patas metálicas.",dim:"100 × 55 × 40 cm",col:["Roble","Nogal"]},
+ {id:4,name:"Rack para TV",cat:"Sala",price:1450,e:"📺",c:"#cbd2d9",d:"Para TV de hasta 65 pulgadas, con 3 repisas.",dim:"160 × 40 × 50 cm",col:["Roble","Negro"]},
+ {id:5,name:"Mesa de comedor",cat:"Comedor",price:2350,e:"🍽️",c:"#e2d3bf",d:"Mesa extensible para 6 personas.",dim:"180 × 90 × 76 cm",col:["Roble","Nogal"]},
+ {id:6,name:"Silla de comedor",cat:"Comedor",price:320,e:"🪑",c:"#d9d2c7",d:"Respaldo curvo y asiento acolchado.",dim:"45 × 50 × 90 cm",col:["Roble","Negro","Gris"]},
+ {id:7,name:"Cama 2 plazas",cat:"Dormitorio",price:1980,e:"🛏️",c:"#d6dde6",d:"Cabecera tapizada y base con patas de madera.",dim:"160 × 200 cm",col:["Gris","Beige"]},
+ {id:8,name:"Velador",cat:"Dormitorio",price:280,e:"🕯️",c:"#e2d3bf",d:"Un cajón amplio y una repisa inferior.",dim:"45 × 40 × 55 cm",col:["Roble","Nogal"]},
+ {id:9,name:"Ropero 3 puertas",cat:"Dormitorio",price:2790,e:"🚪",c:"#cbd2d9",d:"Espejo central, barral y 4 repisas internas.",dim:"150 × 52 × 200 cm",col:["Roble","Blanco"]},
+ {id:10,name:"Escritorio",cat:"Oficina",price:890,e:"🖥️",c:"#cfd9d1",d:"Amplio espacio de trabajo con pasacables.",dim:"140 × 60 × 75 cm",col:["Roble","Blanco","Negro"]},
+ {id:11,name:"Silla ergonómica",cat:"Oficina",price:760,e:"💺",c:"#d6dde6",d:"Soporte lumbar y altura regulable.",dim:"60 × 60 × 110 cm",col:["Negro","Gris"]},
+ {id:12,name:"Estante librero",cat:"Oficina",price:540,e:"📚",c:"#e2d3bf",d:"5 niveles, ideal para libros y decoración.",dim:"80 × 30 × 180 cm",col:["Roble","Blanco"]}
+];
+
+const $ = id => document.getElementById(id);
+const bs = n => "Bs " + n.toLocaleString("es-BO");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const prod = id => P.find(p => p.id == id);
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch(e) { return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+
+let cart = load("mv_cart", []), orders = load("mv_orders", []);
+let cat = "Todos", sort = "", query = "", coupon = "", form = {}, pay = "qr";
+
+/* ---------- Catálogo ---------- */
+function renderTools(){
+  const cats = ["Todos", ...new Set(P.map(p => p.cat))];
+  $("tools").innerHTML = cats.map(c => `<button class="chip ${c===cat?"on":""}" onclick="cat='${c}';renderTools();renderGrid()">${c}</button>`).join("") +
+   `<select class="sort" aria-label="Ordenar" onchange="sort=this.value;renderGrid()">
+     <option value="">Ordenar</option><option value="a" ${sort==="a"?"selected":""}>Menor precio</option><option value="d" ${sort==="d"?"selected":""}>Mayor precio</option></select>`;
+}
+function renderGrid(){
+  let l = P.filter(p => (cat==="Todos" || p.cat===cat) && p.name.toLowerCase().includes(query));
+  if (sort==="a") l.sort((a,b) => a.price-b.price);
+  if (sort==="d") l.sort((a,b) => b.price-a.price);
+  $("grid").innerHTML = l.length ? l.map(p => `
+    <article class="card" onclick="openProduct(${p.id})">
+      <div class="thumb" style="background:${p.c}" aria-hidden="true">${p.e}</div>
+      <div class="b"><h3>${p.name}</h3><small>${p.cat}</small><div class="price">${bs(p.price)}</div></div>
+    </article>`).join("") : `<p>No encontramos muebles con esa búsqueda.</p>`;
+}
+$("q").oninput = e => { query = e.target.value.toLowerCase().trim(); renderGrid(); };
+
+/* ---------- Modal ---------- */
+function modal(html){ $("box").innerHTML = `<button class="x" onclick="closeModal()" aria-label="Cerrar">×</button>` + html; $("ov").classList.add("open"); }
+function closeModal(){ $("ov").classList.remove("open"); }
+document.addEventListener("keydown", e => { if(e.key==="Escape"){ closeModal(); toggleCart(false); } });
+
+function openProduct(id){
+  const p = prod(id);
+  modal(`<div class="two">
+    <div class="thumb" style="background:${p.c};border-radius:10px;height:240px;font-size:6rem">${p.e}</div>
+    <div><h2>${p.name}</h2><p>${p.d}</p><p class="note">Medidas: ${p.dim}</p>
+      <div class="price" style="font-size:1.5rem">${bs(p.price)}</div>
+      <label for="pc">Color</label><select class="f" id="pc">${p.col.map(c=>`<option>${c}</option>`).join("")}</select>
+      <label for="pq">Cantidad</label><input id="pq" type="number" min="1" max="10" value="1">
+      <button class="btn" style="width:100%;margin-top:14px" onclick="addCart(${p.id},$('pc').value,Math.max(1,Math.min(10,+$('pq').value||1)))">Agregar al carrito</button>
+    </div></div>`);
+}
+
+/* ---------- Carrito ---------- */
+function toggleCart(o){ $("cart").classList.toggle("open", o); }
+function addCart(id, color, qty){
+  const it = cart.find(i => i.id==id && i.color===color);
+  if (it) it.qty = Math.min(10, it.qty+qty); else cart.push({id, color, qty});
+  closeModal(); renderCart(); toggleCart(true);
+}
+function chg(i, d){ cart[i].qty += d; if (cart[i].qty<=0) cart.splice(i,1); renderCart(); }
+function applyCoupon(){
+  const v = $("cup").value.trim().toUpperCase();
+  if (v==="BIENVENIDO10"){ coupon = v; $("cmsg").textContent = ""; }
+  else { coupon = ""; $("cmsg").textContent = v ? "Código no válido." : ""; }
+  renderCart();
+}
+function totals(){
+  const sub = cart.reduce((s,i) => s + prod(i.id).price*i.qty, 0);
+  const disc = coupon ? Math.round(sub*0.1) : 0;
+  const ship = !sub ? 0 : (sub-disc >= FREE ? 0 : (CITIES[form.ciudad] ?? null));
+  return {sub, disc, ship, total: sub-disc+(ship||0)};
+}
+function sumHTML(){
+  const t = totals();
+  return `<div><span>Subtotal</span><span>${bs(t.sub)}</span></div>
+    ${t.disc?`<div class="ok"><span>Descuento 10%</span><span>-${bs(t.disc)}</span></div>`:""}
+    <div><span>Envío a domicilio</span><span>${t.ship===null?"Elige tu ciudad":t.ship===0?"Gratis":bs(t.ship)}</span></div>
+    <div class="t"><span>Total</span><span>${bs(t.total)}</span></div>`;
+}
+function renderCart(){
+  $("cnt").textContent = cart.reduce((s,i) => s+i.qty, 0);
+  $("citems").innerHTML = cart.length ? cart.map((i,k) => {
+    const p = prod(i.id);
+    return `<div class="ci"><div><strong>${p.name}</strong><br><small>${i.color} · ${bs(p.price)} c/u</small></div>
+      <div class="qty"><button onclick="chg(${k},-1)" aria-label="Quitar uno">−</button> ${i.qty} <button onclick="chg(${k},1)" aria-label="Agregar uno">+</button></div></div>`;
+  }).join("") : `<p class="note" style="padding:16px 0">Tu carrito está vacío. Agrega un mueble para empezar.</p>`;
+  $("csum").innerHTML = sumHTML();
+  $("go").disabled = !cart.length;
+  save("mv_cart", cart);
+}
+
+/* ---------- Checkout ---------- */
+function stepsHTML(n){ return `<div class="steps">${["Entrega","Pago","Confirmación"].map((s,i)=>`<span class="${i+1===n?"on":""}">${i+1}. ${s}</span>`).join("")}</div>`; }
+function v(k){ return esc(form[k] || ""); }
+
+function checkout(step){
+  toggleCart(false);
+  if (step===1){
+    const min = new Date(Date.now()+864e5*2).toISOString().slice(0,10);
+    modal(`<h2>Datos de entrega</h2>${stepsHTML(1)}
+     <div class="two"><div>
+      <label for="nombre">Nombre completo</label><input id="nombre" value="${v("nombre")}" autocomplete="name">
+      <div class="row2"><div><label for="tel">Celular</label><input id="tel" value="${v("tel")}" inputmode="numeric" placeholder="70000000"></div>
+      <div><label for="email">Correo</label><input id="email" type="email" value="${v("email")}"></div></div>
+      <label for="ciudad">Ciudad</label><select class="f" id="ciudad" onchange="form.ciudad=this.value;$('sm').innerHTML=sumHTML()">
+        <option value="">Elige una ciudad</option>${Object.keys(CITIES).map(c=>`<option ${form.ciudad===c?"selected":""}>${c}</option>`).join("")}</select>
+      <label for="zona">Zona o barrio</label><input id="zona" value="${v("zona")}">
+      <label for="dir">Dirección</label><input id="dir" value="${v("dir")}" placeholder="Calle, número, edificio">
+      <label for="ref">Referencia (opcional)</label><input id="ref" value="${v("ref")}">
+      <div class="row2"><div><label for="fecha">Fecha de entrega</label><input id="fecha" type="date" min="${min}" value="${v("fecha")}"></div>
+      <div><label for="franja">Horario</label><select class="f" id="franja"><option>08:00 – 12:00</option><option ${form.franja==="14:00 – 18:00"?"selected":""}>14:00 – 18:00</option></select></div></div>
+     </div><div><h3 style="margin-bottom:8px">Tu pedido</h3><div class="sum" id="sm">${sumHTML()}</div></div></div>
+     <div class="err" id="err"></div><button class="btn" onclick="step1()">Continuar al pago</button>`);
+  } else if (step===2){
+    modal(`<h2>Método de pago</h2>${stepsHTML(2)}
+     <div class="two"><div>
+      ${[["qr","Pago con QR bancario"],["tarjeta","Tarjeta de crédito o débito"],["contra","Pago contra entrega (efectivo)"]].map(([k,t])=>`<label class="opt ${pay===k?"on":""}"><input type="radio" name="pay" ${pay===k?"checked":""} onchange="pay='${k}';checkout(2)"> ${t}</label>`).join("")}
+      <div id="pd">${payHTML()}</div>
+     </div><div><h3 style="margin-bottom:8px">Resumen</h3><div class="sum">${sumHTML()}</div>
+      <p class="note">Entrega: ${esc(form.zona)}, ${esc(form.ciudad)} · ${esc(form.fecha)} (${esc(form.franja)})</p></div></div>
+     <div class="err" id="err"></div>
+     <button class="btn alt" style="color:var(--navy)" onclick="checkout(1)">Volver</button>
+     <button class="btn" onclick="step2()">Confirmar compra</button>
+     <p class="note">Proyecto de portafolio: el pago es una simulación y no se cobra dinero real. No se guardan datos de tarjeta.</p>`);
+  }
+}
+function payHTML(){
+  if (pay==="qr"){
+    let s = bsSeed(totals().total), cells = "";
+    for (let y=0;y<21;y++) for (let x=0;x<21;x++){ s = (s*1103515245+12345) & 0x7fffffff; if (s%3===0) cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }
+    return `<svg class="qr" viewBox="0 0 21 21" aria-label="QR de demostración"><rect width="21" height="21" fill="#fff"/><g fill="#1c2630">${cells}</g></svg><p class="note" style="text-align:center">QR de demostración. Escanéalo con tu app bancaria en un sistema real.</p>`;
+  }
+  if (pay==="tarjeta") return `<label for="tn">Número de tarjeta</label><input id="tn" inputmode="numeric" maxlength="19" placeholder="4111 1111 1111 1111" autocomplete="off">
+    <label for="tnm">Nombre en la tarjeta</label><input id="tnm" autocomplete="off">
+    <div class="row2"><div><label for="te">Vence (MM/AA)</label><input id="te" maxlength="5" placeholder="08/28" autocomplete="off"></div><div><label for="tc">CVV</label><input id="tc" maxlength="4" inputmode="numeric" autocomplete="off"></div></div>`;
+  return `<p>Pagarás <strong>${bs(totals().total)}</strong> en efectivo cuando recibas tus muebles.</p>`;
+}
+const bsSeed = n => (n*7919+13) & 0x7fffffff;
+function luhn(n){ let s=0, d=false; for (let i=n.length-1;i>=0;i--){ let k=+n[i]; if(d){k*=2;if(k>9)k-=9;} s+=k; d=!d; } return s%10===0; }
+
+function step1(){
+  const g = id => $(id).value.trim();
+  const f = {nombre:g("nombre"), tel:g("tel"), email:g("email"), ciudad:g("ciudad"), zona:g("zona"), dir:g("dir"), ref:g("ref"), fecha:g("fecha"), franja:g("franja")};
+  form = f; const err = $("err");
+  if (f.nombre.length<3) return err.textContent = "Escribe tu nombre completo.";
+  if (!/^[67]\d{7}$/.test(f.tel)) return err.textContent = "El celular debe tener 8 dígitos y empezar con 6 o 7.";
+  if (!/^\S+@\S+\.\S+$/.test(f.email)) return err.textContent = "Escribe un correo válido.";
+  if (!CITIES[f.ciudad]) return err.textContent = "Elige tu ciudad.";
+  if (f.zona.length<2 || f.dir.length<5) return err.textContent = "Completa la zona y la dirección.";
+  if (!f.fecha) return err.textContent = "Elige una fecha de entrega.";
+  checkout(2);
+}
+function step2(){
+  const err = $("err");
+  if (pay==="tarjeta"){
+    const n = $("tn").value.replace(/\s/g,""), e = $("te").value.trim(), c = $("tc").value.trim();
+    if (!/^\d{13,19}$/.test(n) || !luhn(n)) return err.textContent = "El número de tarjeta no es válido.";
+    if ($("tnm").value.trim().length<3) return err.textContent = "Escribe el nombre de la tarjeta.";
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(e)) return err.textContent = "La fecha debe tener el formato MM/AA.";
+    if (!/^\d{3,4}$/.test(c)) return err.textContent = "El CVV debe tener 3 o 4 dígitos.";
+  }
+  const t = totals();
+  const order = {n:"MV-"+Date.now().toString().slice(-6), date:new Date().toLocaleDateString("es-BO"), items:cart.map(i=>({name:prod(i.id).name,color:i.color,qty:i.qty,price:prod(i.id).price})), t, pay, f:{...form}};
+  orders.unshift(order); save("mv_orders", orders);
+  cart = []; coupon = ""; renderCart();
+  modal(`<h2 class="ok">¡Compra confirmada!</h2>${stepsHTML(3)}
+    <p>Tu número de pedido es <strong>${order.n}</strong>. Te enviaremos los detalles a <strong>${esc(order.f.email)}</strong>.</p>
+    <div class="sum">${orderHTML(order)}</div>
+    <button class="btn" style="margin-top:14px" onclick="closeModal()">Seguir comprando</button>`);
+}
+function orderHTML(o){
+  const pl = {qr:"QR bancario",tarjeta:"Tarjeta",contra:"Contra entrega"}[o.pay];
+  return o.items.map(i=>`<div><span>${i.qty} × ${i.name} (${i.color})</span><span>${bs(i.price*i.qty)}</span></div>`).join("") +
+   `<div><span>Envío</span><span>${o.t.ship?bs(o.t.ship):"Gratis"}</span></div>
+    <div class="t"><span>Total (${pl})</span><span>${bs(o.t.total)}</span></div>
+    <div class="note" style="display:block;margin-top:8px">Entrega: ${esc(o.f.dir)}, ${esc(o.f.zona)}, ${esc(o.f.ciudad)}<br>${esc(o.f.fecha)} · ${esc(o.f.franja)}</div>`;
+}
+function showOrders(){
+  modal(`<h2>Mis pedidos</h2>` + (orders.length ? orders.map(o=>`<div class="sum" style="margin:12px 0"><strong>${o.n}</strong> · ${o.date} · <span class="ok">Confirmado</span>${orderHTML(o)}</div>`).join("") : `<p class="note">Todavía no tienes pedidos.</p>`));
+}
+
+renderTools(); renderGrid(); renderCart();
+</script>
+</body>
+</html>
